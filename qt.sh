@@ -14,7 +14,7 @@ echo "0fbcde36556a366df8ecf24a7ea1f7ec  qt-everywhere-opensource-src-5.15.5.tar.
 # Langkah 2: Ekstrak Paket
 echo "Ekstrak paket Qt5..."
 tar -xf qt-everywhere-opensource-src-5.15.5.tar.xz
-cd qt-everywhere-opensource-src-5.15.5
+cd qt-everywhere-src-5.15.5
 
 # Langkah 3: Terapkan Patch (Jika ada)
 echo "Menerapkan patch jika diperlukan..."
