@@ -1,21 +1,71 @@
---- a/Source/JavaScriptCore/API/JSStringRef.cpp
-+++ b/Source/JavaScriptCore/API/JSStringRef.cpp
-@@ -45,6 +45,8 @@ JSStringRef JSStringCreateWithCharacters(const JSChar* chars, size_t numChars)
-     if (!chars)
-         return 0;
-
-+    printf("DEBUG: JSStringCreateWithCharacters called with %zu characters\n", numChars);
+--- Source/JavaScriptCore/API/JSStringRef.cpp	1970-01-01 00:00:00.000000000 +0000
++++ Source/JavaScriptCore/API/JSStringRef.cpp	2025-07-28 00:00:00.000000000 +0000
+@@ -0,0 +1,67 @@
++/*
++ * Copyright (C) 2008 Apple Inc. All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * THIS SOFTWARE IS PROVIDED BY APPLE INC. AND ITS CONTRIBUTORS "AS IS" AND
++ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED. IN NO EVENT SHALL APPLE INC. OR ITS CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ */
 +
-     UString ustring(reinterpret_cast<const UChar*>(chars), numChars);
-     return OpaqueJSString::create(ustring).leakRef();
- }
-
-@@ -100,6 +102,8 @@ void JSStringRelease(JSStringRef string)
- {
-     if (!string)
-         return;
-
-+    printf("DEBUG: JSStringRelease called\n");
++#include "APIJSStringRefPrivate.h"
++#include "APIJSValueRefPrivate.h"
++#include "JSGlobalObject.h"
++#include "JSStringRef.h"
++#include "Operations.h"
++#include "StringTypeAdapter.h"
 +
-     static_cast<OpaqueJSString*>(string)->deref();
- }
++using namespace JSC;
++
++size_t JSStringGetLength(JSStringRef string)
++{
++    return string->length();
++}
++
++size_t JSStringGetMaximumUTF8CStringSize(JSStringRef string)
++{
++    return string->length() * 3 + 1;
++}
++
++size_t JSStringGetUTF8CString(JSStringRef string, char* buffer, size_t bufferSize)
++{
++    return string->getCharactersWithUpconvert(buffer, bufferSize);
++}
++
++bool JSStringIsEqual(JSStringRef a, JSStringRef b)
++{
++    return a->equal(*b);
++}
++
++bool JSStringIsEqualToUTF8CString(JSStringRef a, const char* b)
++{
++    return equal(a->ustring(), makeString(b));
++}
++
++JSStringRef JSStringCreateWithCharacters(const JSChar* chars, size_t numChars)
++{
++    return OpaqueJSString::create(chars, numChars).leakRef();
++}
++
++JSStringRef JSStringCreateWithUTF8CString(const char* string)
++{
++    return OpaqueJSString::createFromUTF8(string).leakRef();
++}
