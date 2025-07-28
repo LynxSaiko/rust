@@ -38,7 +38,7 @@ export QT5PREFIX
 
 # Langkah 5: Membangun Qt5
 echo "Membangun Qt5..."
-make -j4  # Sesuaikan dengan jumlah inti CPU di sistem Anda
+make -j$(nproc)  # Sesuaikan dengan jumlah inti CPU di sistem Anda
 
 # Langkah 6: Instal Qt5
 echo "Menginstal Qt5..."
