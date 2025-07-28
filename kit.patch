@@ -1,11 +1,14 @@
---- a/Source/JavaScriptCore/API/JSStringRef.cpp
-+++ b/Source/JavaScriptCore/API/JSStringRef.cpp
-@@ -35,7 +35,7 @@ JSStringRef JSStringCreateWithCharacters(const JSChar* characters, size_t numCha
+--- Source/JavaScriptCore/API/JSStringRef.cpp
++++ Source/JavaScriptCore/API/JSStringRef.cpp
+@@ -35,7 +35,7 @@
+ JSStringRef JSStringCreateWithCharacters(const JSChar* characters, size_t numChars)
  {
 -    return OpaqueJSString::create(characters, numChars);
 +    return OpaqueJSString::create(reinterpret_cast<const UChar*>(characters), numChars);
  }
-@@ -74,7 +74,7 @@ const JSChar* JSStringGetCharactersPtr(JSStringRef string)
+ 
+@@ -74,7 +74,7 @@
+ const JSChar* JSStringGetCharactersPtr(JSStringRef string)
  {
 -    return string->characters();
 +    return reinterpret_cast<const JSChar*>(string->characters());
