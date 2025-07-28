@@ -1,16 +1,21 @@
 --- a/Source/JavaScriptCore/API/JSStringRef.cpp
 +++ b/Source/JavaScriptCore/API/JSStringRef.cpp
-@@ -35,7 +35,8 @@
- JSStringRef JSStringCreateWithCharacters(const JSChar* characters, size_t numChars)
- {
--    return OpaqueJSString::create(characters, numChars);
-+    return OpaqueJSString::create(reinterpret_cast<const UChar*>(characters), numChars);
+@@ -45,6 +45,8 @@ JSStringRef JSStringCreateWithCharacters(const JSChar* chars, size_t numChars)
+     if (!chars)
+         return 0;
+
++    printf("DEBUG: JSStringCreateWithCharacters called with %zu characters\n", numChars);
++
+     UString ustring(reinterpret_cast<const UChar*>(chars), numChars);
+     return OpaqueJSString::create(ustring).leakRef();
  }
 
- JSStringRef JSStringCreateWithUTF8CString(const char* string)
-@@ -74,7 +75,8 @@
- const JSChar* JSStringGetCharactersPtr(JSStringRef string)
+@@ -100,6 +102,8 @@ void JSStringRelease(JSStringRef string)
  {
--    return string->characters();
-+    return reinterpret_cast<const JSChar*>(string->characters());
+     if (!string)
+         return;
+
++    printf("DEBUG: JSStringRelease called\n");
++
+     static_cast<OpaqueJSString*>(string)->deref();
  }
