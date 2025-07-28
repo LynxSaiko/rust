@@ -5,14 +5,8 @@
 -    return OpaqueJSString::create(characters, numChars);
 +    return OpaqueJSString::create(reinterpret_cast<const UChar*>(characters), numChars);
  }
- 
- JSStringRef JSStringCreateWithUTF8CString(const char* string)
-@@ -44,7 +44,7 @@ size_t JSStringGetLength(JSStringRef string)
- 
- const JSChar* JSStringGetCharactersPtr(JSStringRef string)
+@@ -74,7 +74,7 @@ const JSChar* JSStringGetCharactersPtr(JSStringRef string)
  {
 -    return string->characters();
 +    return reinterpret_cast<const JSChar*>(string->characters());
  }
- 
- size_t JSStringGetMaximumUTF8CStringSize(JSStringRef string)
