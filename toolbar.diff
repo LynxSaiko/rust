@@ -1,0 +1,64 @@
+diff --git a/surf.c b/surf.c
+index f8a735d..3e5e7a2 100644
+--- a/surf.c
++++ b/surf.c
+@@
+ #include <gtk/gtk.h>
+ #include <webkit2/webkit2.h>
+ 
++GtkWidget *uri_entry;
++GtkWidget *toolbar;
++GtkToolItem *back_button, *forward_button;
++
+ static void
++navigate(GtkWidget *widget, gpointer data) {
++	const gchar *url = gtk_entry_get_text(GTK_ENTRY(uri_entry));
++	webkit_web_view_load_uri(WEBKIT_WEB_VIEW(data), url);
++}
++
++static void goback(GtkWidget *widget, gpointer data) {
++	webkit_web_view_go_back(WEBKIT_WEB_VIEW(data));
++}
++
++static void goforward(GtkWidget *widget, gpointer data) {
++	webkit_web_view_go_forward(WEBKIT_WEB_VIEW(data));
++}
++
++static GtkWidget *createwindow(WebKitWebView *webview, gpointer data)
+ {
+ 	GtkWidget *win, *scroll, *view, *vbox;
+ 	WebKitWebView *newview;
+ 
+ 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+ 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+ 
++	/* Toolbar */
++	toolbar = gtk_toolbar_new();
++	uri_entry = gtk_entry_new();
++	back_button = gtk_tool_button_new_from_stock(GTK_STOCK_GO_BACK);
++	forward_button = gtk_tool_button_new_from_stock(GTK_STOCK_GO_FORWARD);
++	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), back_button, -1);
++	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), forward_button, -1);
++	GtkToolItem *entry_item = gtk_tool_item_new();
++	gtk_container_add(GTK_CONTAINER(entry_item), uri_entry);
++	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), entry_item, -1);
++	gtk_box_pack_start(GTK_BOX(vbox), toolbar, FALSE, FALSE, 0);
++
++	/* WebView */
+ 	view = webkit_web_view_new();
+ 	scroll = gtk_scrolled_window_new(NULL, NULL);
+ 	gtk_container_add(GTK_CONTAINER(scroll), view);
+ 
+-	gtk_box_pack_start(GTK_BOX(vbox), scroll, TRUE, TRUE, 0);
++	gtk_box_pack_start(GTK_BOX(vbox), scroll, TRUE, TRUE, 0);
+ 	gtk_container_add(GTK_CONTAINER(win), vbox);
+ 
+ 	gtk_widget_show_all(win);
++
++	/* Connect signals */
++	g_signal_connect(G_OBJECT(uri_entry), "activate", G_CALLBACK(navigate), view);
++	g_signal_connect(G_OBJECT(back_button), "clicked", G_CALLBACK(goback), view);
++	g_signal_connect(G_OBJECT(forward_button), "clicked", G_CALLBACK(goforward), view);
++
+ 	return win;
+ }
