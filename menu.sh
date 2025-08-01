@@ -4,8 +4,8 @@
 # It will use GTK for the menu, update desktop directory, and icons (Papirus theme)
 
 # Define Directories
-MENU_DIR="$HOME/.local/share/menus"
-DESKTOP_DIRECTORY_DIR="$HOME/.local/share/desktop-directories"
+MENU_DIR="/home/leakos/.local/share/menus"
+DESKTOP_DIRECTORY_DIR="/home/leakos/.local/share/desktop-directories"
 ICON_THEME_DIR="$HOME/.icons/Papirus"
 
 # Create necessary directories if they don't exist
