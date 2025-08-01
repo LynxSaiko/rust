@@ -53,9 +53,9 @@ echo "Menambahkan Qt5 ke PATH dan PKG_CONFIG_PATH..."
 sudo bash -c 'cat > /etc/profile.d/qt5.sh << "EOF"
 # Begin /etc/profile.d/qt5.sh
 
-export QT5DIR=$QT5PREFIX
-export PATH=$QT5DIR/bin:$PATH
-export PKG_CONFIG_PATH=$QT5DIR/lib/pkgconfig:$PKG_CONFIG_PATH
+export QT5DIR=/opt/qt5
+export PATH=/opt/qt5/bin:$PATH
+export PKG_CONFIG_PATH=/opt/qt5/lib/pkgconfig:$PKG_CONFIG_PATH
 
 # End /etc/profile.d/qt5.sh
 EOF'
